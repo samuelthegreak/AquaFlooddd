@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aqua Flood Monitoring</title>
+<style>
+    body { margin:0; font-family:Arial; background:#0d1524; color:white;}
+    .navbar {width:100%; background:#0b1120; padding:15px 25px; display:flex; justify-content:space-between; align-items:center;}
+    .status-badge {padding:5px 12px; border-radius:20px; font-size:12px; background:#2a3248;}
+    
+    .container {display:flex; max-width:1000px; margin:30px auto; gap:20px;}
+    .left-panel {flex:2; display:flex; flex-direction:column; gap:20px;}
+    .right-panel {flex:1; display:flex; flex-direction:column; gap:20px;}
+    
+    /* Webcam Card */
+    .cam-card {background:#111a2f; border-radius:10px; position:relative; overflow:hidden;}
+    video.cam-feed {width:100%; height:380px; object-fit:cover; display:block;}
+    
+    /* Overlay Info */
+    .overlay {position:absolute; top:10px; left:10px; color:white; font-size:14px; font-weight:bold;}
+    .overlay .cam-name {font-size:16px; margin-bottom:5px;}
+    .overlay .level-info {font-size:28px;}
+    .level-safe {color:#0bf59f;}
+    .level-warning {color:#ffc107;}
+    .level-critical {color:#ff4c4c;}
+    
+    /* Loading Screen */
+    .loading {position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; font-size:20px; font-weight:bold; display:none;}
+    
+    /* Buttons */
+    .cam-buttons {display:flex; gap:10px; margin:10px;}
+    .small-btn {flex:1; padding:10px; border-radius:8px; background:#111a2f; border:1px solid #2b3550; text-align:center; font-size:14px; cursor:pointer;}
+    .small-btn span {display:block; margin-top:4px; font-weight:bold;}
+    
+    /* Facebook Live Button */
+    .fb-btn {margin:10px; width:100%; background:#0aa3d6; padding:15px; border-radius:8px; text-align:center; font-weight:bold; cursor:pointer;}
+    
+    /* Right Panel Info */
+    .info-card {background:#111a2f; padding:15px; border-radius:10px;}
+    .info-title {font-weight:bold; margin-bottom:10px; font-size:14px; color:#ccc;}
+    .info-item {display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a3248;}
+    .info-item:last-child {border-bottom:none;}
+    .info-label {font-size:12px; color:#999;}
+    .info-status {font-weight:bold; padding:2px 8px; border-radius:6px; font-size:12px;}
+    .safe {background:#0bf59f; color:#0b1a0d;}
+    .warning {background:#ffc107; color:#3a2d0b;}
+    .critical {background:#ff4c4c; color:#1a0b0b;}
+    .system-status {margin-top:20px; font-size:14px;}
+    .operational {color:#0bf59f;}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="navbar-title">
+        <img src="https://raw.githubusercontent.com/samuelthegreak/AquaFlood/refs/heads/main/Screenshot_2025-12-09_003013-removebg-preview.png" 
+             alt="Aqua Flood Logo" width="36" height="36">
+        Aqua Flood
+    </div>
+    <div style="display:flex; gap:5px; align-items:center;">
+        <div class="status-badge" id="status">OFFLINE</div>
+        <div>Logout</div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="cam-card">
+            <video class="cam-feed" id="cam-feed" autoplay muted playsinline></video>
+            <div class="overlay" id="overlay">
+                <div class="cam-name" id="cam-name">POLE #01</div>
+                <div class="level-info level-safe" id="level-info">1 FT SAFE</div>
+            </div>
+            <div class="loading" id="loading">Loading...</div>
+            
+            <div class="cam-buttons">
+                <div class="small-btn" data-name="POLE #01" data-level="1 FT" data-status="SAFE">POLE #01<span>1 FT</span></div>
+                <div class="small-btn" data-name="POLE #02" data-level="2 FT" data-status="WARNING">POLE #02<span>2 FT</span></div>
+                <div class="small-btn" data-name="San Roque River" data-level="3 FT" data-status="CRITICAL">San Roque River<span>3 FT</span></div>
+            </div>
+            <div class="fb-btn" id="fb-btn">Start Facebook Live</div>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="info-card">
+            <div class="info-title">FLOOD MONITORING STATUS</div>
+            <div class="info-item">
+                <div>POLE #01 <span class="info-label">Level: 1 FT</span></div>
+                <div class="info-status safe">SAFE</div>
+            </div>
+            <div class="info-item">
+                <div>POLE #02 <span class="info-label">Level: 2 FT</span></div>
+                <div class="info-status warning">WARNING</div>
+            </div>
+            <div class="info-item">
+                <div>San Roque River <span class="info-label">Level: 3 FT</span></div>
+                <div class="info-status critical">CRITICAL</div>
+            </div>
+        </div>
+        <div class="info-card system-status">
+            PROTOTYPE STATUS: <span class="operational">Good</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Webcam & Overlay Elements
+    const video = document.getElementById('cam-feed');
+    const camNameEl = document.getElementById('cam-name');
+    const levelInfoEl = document.getElementById('level-info');
+    const loadingEl = document.getElementById('loading');
+    const statusBadge = document.getElementById('status');
+
+    // Camera Buttons
+    const buttons = document.querySelectorAll('.small-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Show loading overlay
+            loadingEl.style.display = 'flex';
+            
+            setTimeout(() => {
+                // Update overlay info
+                camNameEl.textContent = btn.dataset.name;
+                levelInfoEl.textContent = `${btn.dataset.level} ${btn.dataset.status}`;
+                
+                // Change color
+                if(btn.dataset.status === 'SAFE') {
+                    levelInfoEl.className = 'level-info level-safe';
+                } else if(btn.dataset.status === 'WARNING') {
+                    levelInfoEl.className = 'level-info level-warning';
+                } else {
+                    levelInfoEl.className = 'level-info level-critical';
+                }
+                
+                loadingEl.style.display = 'none';
+            }, 800); // simulate loading 0.8s
+        });
+    });
+
+    // Facebook Live Simulation
+    document.getElementById('fb-btn').addEventListener('click', () => {
+        alert('Facebook Live Started!');
+    });
+    
+
+    // Start Webcam
+    async function startWebcam() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            video.srcObject = stream;
+            statusBadge.textContent = 'ONLINE';
+        } catch (err) {
+            console.error(err);
+            alert('Could not access webcam. Please allow camera permission.');
+        }
+    }
+    startWebcam();
+</script>
+
+</body>
+</html>
