@@ -4,49 +4,58 @@
 <meta charset="UTF-8">
 <title>Aqua Flood Monitoring</title>
 <style>
-    body { margin:0; font-family:Arial; background:#0d1524; color:white;}
-    .navbar {width:100%; background:#0b1120; padding:15px 25px; display:flex; justify-content:space-between; align-items:center;}
-    .status-badge {padding:5px 12px; border-radius:20px; font-size:12px; background:#2a3248;}
-    
-    .container {display:flex; max-width:1000px; margin:30px auto; gap:20px;}
-    .left-panel {flex:2; display:flex; flex-direction:column; gap:20px;}
-    .right-panel {flex:1; display:flex; flex-direction:column; gap:20px;}
-    
-    /* Webcam Card */
-    .cam-card {background:#111a2f; border-radius:10px; position:relative; overflow:hidden;}
-    video.cam-feed {width:100%; height:380px; object-fit:cover; display:block;}
-    
-    /* Overlay Info */
-    .overlay {position:absolute; top:10px; left:10px; color:white; font-size:14px; font-weight:bold;}
-    .overlay .cam-name {font-size:16px; margin-bottom:5px;}
-    .overlay .level-info {font-size:28px;}
-    .level-safe {color:#0bf59f;}
-    .level-warning {color:#ffc107;}
-    .level-critical {color:#ff4c4c;}
-    
-    /* Loading Screen */
-    .loading {position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; font-size:20px; font-weight:bold; display:none;}
-    
-    /* Buttons */
-    .cam-buttons {display:flex; gap:10px; margin:10px;}
-    .small-btn {flex:1; padding:10px; border-radius:8px; background:#111a2f; border:1px solid #2b3550; text-align:center; font-size:14px; cursor:pointer;}
-    .small-btn span {display:block; margin-top:4px; font-weight:bold;}
-    
-    /* Facebook Live Button */
-    .fb-btn {margin:10px; width:100%; background:#0aa3d6; padding:15px; border-radius:8px; text-align:center; font-weight:bold; cursor:pointer;}
-    
-    /* Right Panel Info */
-    .info-card {background:#111a2f; padding:15px; border-radius:10px;}
-    .info-title {font-weight:bold; margin-bottom:10px; font-size:14px; color:#ccc;}
-    .info-item {display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a3248;}
-    .info-item:last-child {border-bottom:none;}
-    .info-label {font-size:12px; color:#999;}
-    .info-status {font-weight:bold; padding:2px 8px; border-radius:6px; font-size:12px;}
-    .safe {background:#0bf59f; color:#0b1a0d;}
-    .warning {background:#ffc107; color:#3a2d0b;}
-    .critical {background:#ff4c4c; color:#1a0b0b;}
-    .system-status {margin-top:20px; font-size:14px;}
-    .operational {color:#0bf59f;}
+body { margin:0; font-family:Arial; background:#0d1524; color:white;}
+.navbar {width:100%; background:#0b1120; padding:15px 25px; display:flex; justify-content:space-between; align-items:center;}
+.status-badge {padding:5px 12px; border-radius:20px; font-size:12px; background:#2a3248;}
+
+.container {display:flex; max-width:1000px; margin:30px auto; gap:20px;}
+.left-panel {flex:2; display:flex; flex-direction:column; gap:20px;}
+.right-panel {flex:1; display:flex; flex-direction:column; gap:20px;}
+
+/* Webcam Card */
+.cam-card {background:#111a2f; border-radius:10px; position:relative; overflow:hidden;}
+video.cam-feed {width:100%; height:380px; object-fit:cover; display:block;}
+
+/* Overlay Info */
+.overlay {position:absolute; top:10px; left:10px; color:white; font-size:14px; font-weight:bold;}
+.overlay .cam-name {font-size:16px; margin-bottom:5px;}
+.overlay .level-info {font-size:28px;}
+.level-safe {color:#0bf59f;}
+.level-warning {color:#ffc107;}
+.level-critical {color:#ff4c4c;}
+
+/* Loading Screen */
+.loading {position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; font-size:20px; font-weight:bold; display:none;}
+
+/* Buttons */
+.cam-buttons {display:flex; gap:10px; margin:10px;}
+.small-btn {flex:1; padding:10px; border-radius:8px; background:#111a2f; border:1px solid #2b3550; text-align:center; font-size:14px; cursor:pointer;}
+.small-btn span {display:block; margin-top:4px; font-weight:bold;}
+
+/* Facebook Live Button */
+.fb-btn {margin:10px; width:100%; background:#0aa3d6; padding:15px; border-radius:8px; text-align:center; font-weight:bold; cursor:pointer;}
+
+/* Right Panel Info */
+.info-card {background:#111a2f; padding:15px; border-radius:10px; margin-bottom:15px;}
+.info-title {font-weight:bold; margin-bottom:10px; font-size:14px; color:#ccc;}
+.info-item {display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a3248;}
+.info-item:last-child {border-bottom:none;}
+.info-label {font-size:12px; color:#999;}
+.info-status {font-weight:bold; padding:2px 8px; border-radius:6px; font-size:12px;}
+.safe {background:#0bf59f; color:#0b1a0d;}
+.warning {background:#ffc107; color:#3a2d0b;}
+.critical {background:#ff4c4c; color:#1a0b0b;}
+.system-status {margin-top:20px; font-size:14px;}
+.operational {color:#0bf59f;}
+
+/* Battery Switch */
+.battery-row {display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:14px;}
+.switch {position: relative; width: 44px; height: 24px;}
+.switch input {opacity: 0; width: 0; height: 0;}
+.slider {position: absolute; cursor: pointer; inset: 0; background: #444; border-radius: 24px; transition: 0.3s;}
+.slider:before {content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s;}
+input:checked + .slider {background: #0bf59f;}
+input:checked + .slider:before {transform: translateX(20px);}
 </style>
 </head>
 <body>
@@ -62,8 +71,6 @@
         <div>Logout</div>
     </div>
 </div>
-
-
 
 <div class="container">
     <!-- Left Panel -->
@@ -102,64 +109,216 @@
                 <div class="info-status critical">CRITICAL</div>
             </div>
         </div>
+
+<!-- SOLAR STATUS -->
+<div class="info-card">
+    <div class="info-title">SOLAR PANEL STATUS</div>
+    
+    <div class="info-item">
+        <div>POLE #01</div>
+        <div class="info-status" id="solar-1" style="background:#0bf59f;">Good</div>
+    </div>
+    
+    <div class="info-item">
+        <div>POLE #02</div>
+        <div class="info-status" id="solar-2" style="background:#0bf59f;">Good</div>
+    </div>
+    
+    <div class="info-item">
+        <div>San Roque River</div>
+        <div class="info-status" id="solar-3" style="background:#0bf59f;">Good</div>
+    </div>
+</div>
+
+        <!-- POLE #01 Battery -->
         <div class="info-card system-status">
-            PROTOTYPE STATUS: <span class="operational">Good</span>
+            PROTOTYPE STATUS (POLE #01): <span class="operational">Good</span>
+            <br><br>
+            BATTERY PERCENTAGE: <span class="operational" id="prototype-percent-1">89%</span>
+            <div class="battery-row">
+                <div>LITHIUM BATTERY: <span class="operational" id="lithium-percent-1">100%</span></div>
+                <label class="switch"><input type="checkbox" id="lithium-switch-1"><span class="slider"></span></label>
+            </div>
+            <div style="font-size:12px; color:#999; margin-top:5px;">Powerbank Mode (Charge Prototype)</div>
         </div>
+
+        <!-- POLE #02 Battery -->
+        <div class="info-card system-status">
+            PROTOTYPE STATUS (POLE #02): <span class="operational">Good</span>
+            <br><br>
+            BATTERY PERCENTAGE: <span class="operational" id="prototype-percent-2">89%</span>
+            <div class="battery-row">
+                <div>LITHIUM BATTERY: <span class="operational" id="lithium-percent-2">100%</span></div>
+                <label class="switch"><input type="checkbox" id="lithium-switch-2"><span class="slider"></span></label>
+            </div>
+            <div style="font-size:12px; color:#999; margin-top:5px;">Powerbank Mode (Charge Prototype)</div>
+        </div>
+
+        <!-- SAN ROQUE RIVER Battery -->
+        <div class="info-card system-status">
+            PROTOTYPE STATUS (SAN ROQUE RIVER): <span class="operational">Good</span>
+            <br><br>
+            BATTERY PERCENTAGE: <span class="operational" id="prototype-percent-3">89%</span>
+            <div class="battery-row">
+                <div>LITHIUM BATTERY: <span class="operational" id="lithium-percent-3">100%</span></div>
+                <label class="switch"><input type="checkbox" id="lithium-switch-3"><span class="slider"></span></label>
+            </div>
+            <div style="font-size:12px; color:#999; margin-top:5px;">Powerbank Mode (Charge Prototype)</div>
+        </div>
+
     </div>
 </div>
 
 <script>
-    // Webcam & Overlay Elements
-    const video = document.getElementById('cam-feed');
-    const camNameEl = document.getElementById('cam-name');
-    const levelInfoEl = document.getElementById('level-info');
-    const loadingEl = document.getElementById('loading');
-    const statusBadge = document.getElementById('status');
+// Webcam & Overlay
+const video = document.getElementById('cam-feed');
+const camNameEl = document.getElementById('cam-name');
+const levelInfoEl = document.getElementById('level-info');
+const loadingEl = document.getElementById('loading');
+const statusBadge = document.getElementById('status');
 
-    // Camera Buttons
-    const buttons = document.querySelectorAll('.small-btn');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Show loading overlay
-            loadingEl.style.display = 'flex';
-            
-            setTimeout(() => {
-                // Update overlay info
-                camNameEl.textContent = btn.dataset.name;
-                levelInfoEl.textContent = `${btn.dataset.level} ${btn.dataset.status}`;
-                
-                // Change color
-                if(btn.dataset.status === 'SAFE') {
-                    levelInfoEl.className = 'level-info level-safe';
-                } else if(btn.dataset.status === 'WARNING') {
-                    levelInfoEl.className = 'level-info level-warning';
-                } else {
-                    levelInfoEl.className = 'level-info level-critical';
-                }
-                
-                loadingEl.style.display = 'none';
-            }, 800); // simulate loading 0.8s
-        });
+// Camera buttons
+document.querySelectorAll('.small-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        loadingEl.style.display = 'flex';
+        setTimeout(() => {
+            camNameEl.textContent = btn.dataset.name;
+            levelInfoEl.textContent = `${btn.dataset.level} ${btn.dataset.status}`;
+            levelInfoEl.className = `level-info level-${btn.dataset.status.toLowerCase()}`;
+            loadingEl.style.display = 'none';
+        }, 800);
     });
+});
 
-    // Facebook Live Simulation
-    document.getElementById('fb-btn').addEventListener('click', () => {
-        alert('Facebook Live Started!');
+// FACEBOOK LIVE
+document.getElementById('fb-btn').addEventListener('click', () => alert('Facebook Live Started!'));
+
+// WEBCAM
+async function startWebcam() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+        statusBadge.textContent = 'ONLINE';
+    } catch (err) {
+        console.error(err);
+        alert('Could not access webcam. Please allow camera permission.');
+    }
+}
+startWebcam();
+
+// ===============================
+// BATTERY SYSTEM (Lithium + Solar)
+// ===============================
+
+// Prototype batteries
+let prototypeBatteries = { 1: 67, 2: 35, 3: 79 };
+
+// Lithium batteries
+let lithiumBatteries = { 1: 100, 2: 100, 3: 100 };
+
+// Track lithium drain for 3% → 1% prototype rule
+let drainedSinceLastCharge = { 1: 0, 2: 0, 3: 0 };
+
+// Lithium intervals
+let lithiumIntervals = {};
+
+// Update prototype & lithium UI
+function updateBatteryUI() {
+    for (let i = 1; i <= 3; i++) {
+        // Prototype battery
+        let protoEl = document.getElementById(`prototype-percent-${i}`);
+        let protoPercent = prototypeBatteries[i];
+        if (protoPercent > 100) protoPercent = 100;
+        protoEl.textContent = protoPercent + "%";
+        protoEl.style.color = protoPercent > 50 ? "#0bf59f" :
+                               protoPercent > 20 ? "#ffc107" : "#ff4c4c";
+
+        // Lithium battery
+        let lithiumEl = document.getElementById(`lithium-percent-${i}`);
+        let lithiumPercent = lithiumBatteries[i];
+        if (lithiumPercent < 0) lithiumPercent = 0;
+        lithiumEl.textContent = lithiumPercent + "%";
+        lithiumEl.style.color = lithiumPercent > 50 ? "#0bf59f" :
+                                lithiumPercent > 20 ? "#ffc107" : "#ff4c4c";
+    }
+}
+
+// Start lithium charging for a specific pole
+function startLithiumCharge(pole) {
+    if (lithiumIntervals[pole]) return; // already running
+
+    lithiumIntervals[pole] = setInterval(() => {
+        if (lithiumBatteries[pole] <= 0 || prototypeBatteries[pole] >= 100) {
+            stopLithiumCharge(pole);
+            return;
+        }
+
+        // Drain 1% lithium per step
+        lithiumBatteries[pole]--;
+        drainedSinceLastCharge[pole]++;
+
+        // Every 3% drained, charge prototype by 1%
+        if (drainedSinceLastCharge[pole] >= 3) {
+            prototypeBatteries[pole]++;
+            drainedSinceLastCharge[pole] = 0;
+        }
+
+        updateBatteryUI();
+    }, 3000);
+}
+
+// Stop lithium charging
+function stopLithiumCharge(pole) {
+    clearInterval(lithiumIntervals[pole]);
+    lithiumIntervals[pole] = null;
+}
+
+// Lithium switch listeners
+for (let i = 1; i <= 3; i++) {
+    const switchEl = document.getElementById(`lithium-switch-${i}`);
+    switchEl.addEventListener("change", () => {
+        if (switchEl.checked) startLithiumCharge(i);
+        else stopLithiumCharge(i);
     });
-    
+}
 
-    // Start Webcam
-    async function startWebcam() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            video.srcObject = stream;
-            statusBadge.textContent = 'ONLINE';
-        } catch (err) {
-            console.error(err);
-            alert('Could not access webcam. Please allow camera permission.');
+// Solar charging (1% every 5 seconds)
+function solarCharge() {
+    for (let i = 1; i <= 3; i++) {
+        if (prototypeBatteries[i] < 100) {
+            prototypeBatteries[i]++;
         }
     }
-    startWebcam();
+    updateBatteryUI();
+}
+
+// Start solar charging interval
+setInterval(solarCharge, 5000);
+
+// Initial update
+updateBatteryUI();
+
+
+// Example: random solar status update every 5 seconds
+const solarColors = {
+    Stable: "#0bf59f",
+    Moderate: "#ffc107",
+    Critical: "#ff4c4c"
+};
+
+const solarStatus = ["Stable", "Moderate", "Critical"];
+
+function updateSolarStatus() {
+    for (let i = 1; i <= 3; i++) {
+        const status = solarStatus[Math.floor(Math.random() * solarStatus.length)];
+        const el = document.getElementById(`solar-${i}`);
+        el.textContent = status;
+        el.style.background = solarColors[status];
+    }
+}
+
+setInterval(updateSolarStatus, 4200); // update every 5 seconds
+
 </script>
 
 </body>
